@@ -1,6 +1,8 @@
-package lwjgladapter.sound;
+package lwjgladapter.sound.exceptions;
 
-public class DublicateAudioMasterException extends Exception {
+import lwjgladapter.datatypes.LWJGLAdapterException;
+
+public class DublicateAudioMasterException extends LWJGLAdapterException {
 
 	/**
 	 * 

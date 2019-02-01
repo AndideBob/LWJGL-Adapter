@@ -1,6 +1,8 @@
 package lwjgladapter.input;
 
-public class DublicateInputManagerException extends Exception {
+import lwjgladapter.datatypes.LWJGLAdapterException;
+
+public class DublicateInputManagerException extends LWJGLAdapterException {
 
 	/**
 	 * 

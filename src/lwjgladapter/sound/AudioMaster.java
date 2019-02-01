@@ -3,6 +3,9 @@ package lwjgladapter.sound;
 import org.lwjgl.openal.*;
 
 import lwjgladapter.logging.Logger;
+import lwjgladapter.sound.exceptions.AudioNotInMemoryException;
+import lwjgladapter.sound.exceptions.DublicateAudioMasterException;
+import lwjgladapter.sound.exceptions.IllegalSoundValueException;
 
 import static org.lwjgl.openal.ALC10.*;
 
@@ -47,28 +50,92 @@ public class AudioMaster {
 	public void loadSound(Object key, String filePath){
 		if(soundLibrary.containsKey(key)){
 			Logger.log("Sound for " + key.toString() + " already exists and will be overwritten!");
-			soundLibrary.get(key).unload();
+			try{
+				soundLibrary.get(key).unload();
+			}
+			catch(AudioNotInMemoryException e){
+				Logger.logError("Error unloading " + key.toString() + ": " + e.getMessage());
+			}
 			soundLibrary.remove(key);
 		}
-		Sound newSound = new Sound(filePath);
+		//Add differentiation between Single and Multi-InstanceSounds
+		Sound newSound = new SingleInstanceSound(key.toString(), filePath);
 		soundLibrary.put(key, newSound);
 	}
 	
-	public void playSound(Object key){
+	public void manageSound(Object key, boolean looping, float volume, float pitch) throws AudioNotInMemoryException, IllegalSoundValueException{
+		if(soundLibrary.containsKey(key)){
+			Sound sound = soundLibrary.get(key);
+			sound.setLooping(looping);
+			sound.setPitch(pitch);
+			sound.setGain(volume);
+			if(sound instanceof SingleInstanceSound){
+				if(sound.isPlaying()){
+					sound.pause();
+					sound.play();
+				}
+			}
+		}
+		else{
+			throw new AudioNotInMemoryException("Sound " + key.toString() + " does not exist in Memory!");
+		}
+	}
+	
+	public void playSound(Object key) throws AudioNotInMemoryException{
 		if(soundLibrary.containsKey(key)){
 			soundLibrary.get(key).play();
 		}
 		else{
-			Logger.logError("Sound " + key.toString() + " does not exist in Memory!");
+			throw new AudioNotInMemoryException("Sound " + key.toString() + " does not exist in Memory!");			
 		}
 	}
 	
-	public void destroy(){
-		for(Sound sound : soundLibrary.values()){
-			sound.unload();
+	public void pauseSound(Object key) throws AudioNotInMemoryException {
+		if(soundLibrary.containsKey(key)){
+			soundLibrary.get(key).pause();
+		}
+		else{
+			throw new AudioNotInMemoryException("Sound " + key.toString() + " does not exist in Memory!");
+		}
+	}
+	
+	public void stopSound(Object key) throws AudioNotInMemoryException {
+		if(soundLibrary.containsKey(key)){
+			soundLibrary.get(key).stop();
+		}
+		else{
+			throw new AudioNotInMemoryException("Sound " + key.toString() + " does not exist in Memory!");
+		}
+	}
+	
+	public void stopAllSounds(Object key) throws AudioNotInMemoryException {
+		if(soundLibrary.containsKey(key)){
+			if(soundLibrary.get(key) instanceof MultiInstanceSound){
+				MultiInstanceSound sound = (MultiInstanceSound)soundLibrary.get(key);
+				sound.stopAll();
+			}
+			else{
+				stopSound(key);
+			}
+		}
+		else{
+			throw new AudioNotInMemoryException("Sound " + key.toString() + " does not exist in Memory!");
+		}
+	}
+	
+	public void destroy() {
+		for(Object key : soundLibrary.keySet()){
+			try{
+				soundLibrary.get(key).unload();
+			}
+			catch(AudioNotInMemoryException e){
+				Logger.logError("Error unloading " + key.toString() + ": " + e.getMessage());
+			}
 		}
 		alcDestroyContext(context);
 		alcCloseDevice(device);
 	}
+
+	
 
 }
