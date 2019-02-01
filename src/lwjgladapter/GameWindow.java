@@ -47,12 +47,14 @@ import lwjgladapter.game.Game;
 import lwjgladapter.input.InputManager;
 import lwjgladapter.logging.LoggedErrorCallback;
 import lwjgladapter.logging.Logger;
+import lwjgladapter.sound.AudioMaster;
 
 public class GameWindow {
 
 	private long window;
 	private Game game;
 	private InputManager input;
+	private AudioMaster audio;
 	
 	private int windowSizeX;
 	private int windowSizeY;
@@ -81,6 +83,9 @@ public class GameWindow {
 			Logger.logError(e);
 		}
 		finally{
+			// Free Sound Memory
+			audio.destroy();
+			
 			// Free the window callbacks and destroy the window
 			glfwFreeCallbacks(window);
 			glfwDestroyWindow(window);
@@ -110,6 +115,8 @@ public class GameWindow {
 
 		// Setup Input manager
 		input = new InputManager(window);
+		// Setup Audio Master
+		audio = new AudioMaster();
 
 		// Get the thread stack and push a new frame
 		try ( MemoryStack stack = stackPush() ) {

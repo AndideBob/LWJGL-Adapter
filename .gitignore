@@ -2,3 +2,6 @@
 /LWJGL_Adapter.zip
 /LWJGL_Adapter_EclipseSource.zip
 /.classpath
+/testResources/
+/src/lwjgladapter/test
+/src/lwjgladapter/Main.java

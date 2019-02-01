@@ -26,7 +26,7 @@ public class InputManager {
 	private HashMap<KeyboardKey,ButtonState> keyboard;
 	private HashSet<Gamepad> gamepads;
 	
-	public InputManager(long window) throws DoublicateInputManagerException {
+	public InputManager(long window) throws DublicateInputManagerException {
 		if(instance == null){
 			instance = this;
 			mouseButtons = new HashMap<>();
@@ -40,7 +40,7 @@ public class InputManager {
 			glfwSetCursorPosCallback(window, getCursorPositionCallback());
 		}
 		else{
-			throw new DoublicateInputManagerException("InputManager is a Singleton Object and it can only be initialized once!");
+			throw new DublicateInputManagerException("InputManager is a Singleton Object and it can only be initialized once!");
 		}
 	}
 	
