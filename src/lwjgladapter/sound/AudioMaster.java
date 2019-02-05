@@ -47,7 +47,21 @@ public class AudioMaster {
 		}
 	}
 	
-	public void loadSound(Object key, String filePath){
+	public void loadSingleInstanceSound(Object key, String filePath){
+		checkIfNewSoundIsLoadedAlready(key);
+		//Add differentiation between Single and Multi-InstanceSounds
+		Sound newSound = new SingleInstanceSound(key.toString(), filePath);
+		soundLibrary.put(key, newSound);
+	}
+	
+	public void loadMultiInstanceSound(Object key, String filePath, int maxNumberOfInstances){
+		checkIfNewSoundIsLoadedAlready(key);
+		//Add differentiation between Single and Multi-InstanceSounds
+		Sound newSound = new MultiInstanceSound(key.toString(), filePath, maxNumberOfInstances);
+		soundLibrary.put(key, newSound);
+	}
+	
+	private void checkIfNewSoundIsLoadedAlready(Object key){
 		if(soundLibrary.containsKey(key)){
 			Logger.log("Sound for " + key.toString() + " already exists and will be overwritten!");
 			try{
@@ -58,9 +72,6 @@ public class AudioMaster {
 			}
 			soundLibrary.remove(key);
 		}
-		//Add differentiation between Single and Multi-InstanceSounds
-		Sound newSound = new SingleInstanceSound(key.toString(), filePath);
-		soundLibrary.put(key, newSound);
 	}
 	
 	public void manageSound(Object key, boolean looping, float volume, float pitch) throws AudioNotInMemoryException, IllegalSoundValueException{
