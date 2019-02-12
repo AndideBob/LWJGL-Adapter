@@ -85,6 +85,11 @@ class MultiInstanceSound extends Sound {
 			alSourcei(sourcePointers[i], AL_BUFFER, bufferPointer);
 		}
 		
+		//Set Default Values for Sounds
+		this.pitch = 1f;
+		this.gain = 1f;
+		this.looping = false;
+		
 		super.loaded = true;
 	}
 	
