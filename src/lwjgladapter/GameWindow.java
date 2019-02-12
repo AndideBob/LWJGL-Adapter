@@ -93,6 +93,7 @@ public class GameWindow {
 			// Terminate GLFW and free the error callback
 			glfwTerminate();
 			glfwSetErrorCallback(null).free();
+			Logger.free();
 		}
 	}
 	

@@ -22,9 +22,15 @@ public class Logger {
 		logFileInitialized = true;
 	}
 	
-	public static void free() throws IOException{
+	public static void free() {
 		if(logFileInitialized){
-			fileWriter.close();
+			logFileInitialized = false;
+			try{
+				fileWriter.close();
+			}
+			catch(IOException e){
+				logError(e);
+			}
 		}
 	}
 	
