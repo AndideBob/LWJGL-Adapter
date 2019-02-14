@@ -4,8 +4,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 import org.lwjgl.glfw.GLFWCursorPosCallback;
+import org.lwjgl.glfw.GLFWCursorPosCallbackI;
 import org.lwjgl.glfw.GLFWKeyCallback;
+import org.lwjgl.glfw.GLFWKeyCallbackI;
 import org.lwjgl.glfw.GLFWMouseButtonCallback;
+import org.lwjgl.glfw.GLFWMouseButtonCallbackI;
 
 import lwjgladapter.input.gamepad.Gamepad;
 import lwjgladapter.input.gamepad.GamepadAxis;
@@ -169,33 +172,33 @@ public class InputManager {
 		keyboard.put(button, newState);
 	}
 	
-	public GLFWKeyCallback getKeyCallback(){
+	public GLFWKeyCallbackI getKeyCallback(){
 		return new KeyCallback();
 	}
 	
-	public GLFWMouseButtonCallback getMouseCallback(){
+	public GLFWMouseButtonCallbackI getMouseCallback(){
 		return new MouseCallback();
 	}
 	
-	public GLFWCursorPosCallback getCursorPositionCallback(){
+	public GLFWCursorPosCallbackI getCursorPositionCallback(){
 		return new CursorPositionCallback();
 	}
 	
-	private class KeyCallback extends GLFWKeyCallback{
+	private class KeyCallback implements GLFWKeyCallbackI{
 		@Override
 		public void invoke(long window, int key, int scancode, int action, int mods) {
 			instance.setKeyboard(key, action);
 		}
 	}
 	
-	private class MouseCallback extends GLFWMouseButtonCallback{
+	private class MouseCallback implements GLFWMouseButtonCallbackI{
 		@Override
 		public void invoke(long window, int button, int action, int mods) {
 			instance.setMouseButton(button, action);
 		}
 	}
 	
-	private class CursorPositionCallback extends GLFWCursorPosCallback{
+	private class CursorPositionCallback implements GLFWCursorPosCallbackI{
 		@Override
 		public void invoke(long window, double xpos, double ypos) {
 			instance.setMousePosition(xpos, ypos);
