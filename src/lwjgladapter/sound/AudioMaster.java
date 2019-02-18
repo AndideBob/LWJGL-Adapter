@@ -27,7 +27,7 @@ public class AudioMaster {
 			init();
 		}
 		else{
-			throw new DublicateAudioMasterException("InputManager is a Singleton Object and it can only be initialized once!");
+			throw new DublicateAudioMasterException("AudioMaster is a Singleton Object and it can only be initialized once!");
 		}
 	}
 	
