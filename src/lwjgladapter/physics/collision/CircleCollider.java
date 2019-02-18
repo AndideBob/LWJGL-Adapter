@@ -40,7 +40,16 @@ public class CircleCollider extends Collider {
 		if(other instanceof CircleCollider){
 			return intersectsWithCircle((CircleCollider)other);
 		}
+		if(other instanceof RectCollider){
+			return intersectsWithRect((RectCollider)other);
+		}
 		return super.intersects(other);
+	}
+
+	private boolean intersectsWithPoint(int pointX, int pointY){
+		int deltaX = getPositionX() - pointX;
+		int deltaY = getPositionY() - pointY;
+		return (Math.pow(deltaX, 2) + Math.pow(deltaY, 2)) < Math.pow(radius, 2);
 	}
 	
 	private boolean intersectsWithCircle(CircleCollider other){
@@ -51,4 +60,9 @@ public class CircleCollider extends Collider {
 		return distance <= radiusDistance;
 	}
 
+	private boolean intersectsWithRect(RectCollider other) {
+		int nearestX = Math.max(other.getPositionX(), Math.min(positionX, other.getPositionX() + other.getWidth()));
+		int nearestY = Math.max(other.getPositionY(), Math.min(positionY, other.getPositionY() + other.getHeight()));
+		return intersectsWithPoint(nearestX, nearestY);
+	}
 }

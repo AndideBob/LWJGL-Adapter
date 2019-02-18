@@ -28,6 +28,14 @@ public abstract class Collider {
 		return key;
 	}
 
+	/**
+	 * This method checks whether this collider intersects with another Collider. However this check is not commutative and should
+	 * therefor not be called by the game itself. The game should always call {@link lwjgladapter.physics.collision.PhysicsHelper#checkCollisionBetween(Collider, Collider) PhysicsHelper.checkCollisionBetween(ColliderA, ColliderB)}
+	 * @param other The other Collider.
+	 * @return
+	 * @throws CollisionNotSupportedException
+	 */
+	
 	public boolean intersects(Collider other) throws CollisionNotSupportedException{
 		throw new CollisionNotSupportedException("No collision defined between " + this.getClass().getName() + " and " + other.getClass().getName() + "!");
 	}
