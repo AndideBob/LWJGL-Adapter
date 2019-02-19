@@ -10,6 +10,7 @@ import org.lwjgl.glfw.GLFWKeyCallbackI;
 import org.lwjgl.glfw.GLFWMouseButtonCallback;
 import org.lwjgl.glfw.GLFWMouseButtonCallbackI;
 
+import lwjgladapter.GameWindowConstants;
 import lwjgladapter.input.gamepad.Gamepad;
 import lwjgladapter.input.gamepad.GamepadAxis;
 import lwjgladapter.input.gamepad.GamepadButton;
@@ -131,27 +132,78 @@ public class InputManager {
 		return ButtonState.UP;
 	}
 	
-	public double getMousePositionX(){
+	/**
+	 * Returns the mouse position on the current screen. Use this if your window size does not change for example.
+	 * @return The current Mouse X-Coordinate inside the current window.
+	 */
+	public double getAbsoluteMousePositionX(){
 		return mousePositionX;
 	}
 	
-	public double getMousePositionY(){
+	/**
+	 * Returns the mouse position on the current screen. Use this if your window size does not change for example.
+	 * @return The current Mouse Y-Coordinate inside the current window.
+	 */
+	public double getAbsoluteMousePositionY(){
 		return mousePositionY;
 	}
 	
-	public int getMousePositionXAsInt(){
+	/**
+	 * Returns the mouse position on the current screen rounded to int. Use this if your window size does not change for example.
+	 * @return The current Mouse Y-Coordinate inside the current window.
+	 */
+	public int getAbsoluteMousePositionXAsInt(){
 		return (int) Math.round(mousePositionX);
 	}
 	
-	public int getMousePositionYAsInt(){
+	/**
+	 * Returns the mouse position on the current screen rounded to int. Use this if your window size does not change for example.
+	 * @return The current Mouse Y-Coordinate inside the current window.
+	 */
+	public int getAbsoluteMousePositionYAsInt(){
 		return (int) Math.round(mousePositionY);
+	}
+	
+	/**
+	 * Returns the mouse position on the current screen relative to the size defined in {@link lwjgladapter.GameWindowConstants#DEFAULT_SCREEN_WIDTH DEFAULT_SCREEN_WIDTH}
+	 * @return The current Mouse X-Coordinate inside the current window relative to the default window size.
+	 */
+	public double getRelativeMousePositionX(){
+		double result = mousePositionY * GameWindowConstants.getSCALE_FACTOR_X();
+		return result;
+	}
+	
+	/**
+	 * Returns the mouse position on the current screen relative to the size defined in {@link lwjgladapter.GameWindowConstants#DEFAULT_SCREEN_HEIGHT DEFAULT_SCREEN_HEIGHT}
+	 * @return The current Mouse Y-Coordinate inside the current window relative to the default window size.
+	 */
+	public double getRelativeMousePositionY(){
+		double result = mousePositionY * GameWindowConstants.getSCALE_FACTOR_Y();
+		return result;
+	}
+	
+	/**
+	 * Returns the mouse position on the current screen relative to the size defined in {@link lwjgladapter.GameWindowConstants#DEFAULT_SCREEN_WIDTH DEFAULT_SCREEN_WIDTH}
+	 * @return The current Mouse X-Coordinate inside the current window relative to the default window size rounded to an int.
+	 */
+	public int getRelativeMousePositionXAsInt(){
+		return (int) Math.round(getRelativeMousePositionX());
+	}
+	
+	/**
+	 * Returns the mouse position on the current screen relative to the size defined in {@link lwjgladapter.GameWindowConstants#DEFAULT_SCREEN_HEIGHT DEFAULT_SCREEN_HEIGHT}
+	 * @return The current Mouse Y-Coordinate inside the current window relative to the default window size rounded to an int.
+	 */
+	public int getRelativeMousePositionYAsInt(){
+		return (int) Math.round(getRelativeMousePositionY());
 	}
 	
 	// SETTERS
 		
 	private void setMousePosition(double posX, double posY){
 		mousePositionX = posX;
-		mousePositionY = posY;
+		double mouseY = GameWindowConstants.getSCREEN_HEIGHT() - posY; //Make Bottom Left Corner (0,0)
+		mousePositionY = mouseY;
 	}
 	
 	private void setMouseButton(int glfwValue, int action){
