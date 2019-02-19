@@ -42,7 +42,7 @@ public class Gamepad {
 	private void updateAxis(){
 		FloatBuffer buffer = glfwGetJoystickAxes(id.getGlfwValue());
 		if(buffer != null){
-			float[] axisArray = buffer.array();
+			float[] axisArray = toFloatArray(buffer);
 			for(int i = 0; i < axisArray.length; i++){
 				for(GamepadAxis gpa : GamepadAxis.values()){
 					if(i == gpa.getGlfwValue()){
@@ -57,7 +57,7 @@ public class Gamepad {
 	private void updateButtons(){
 		ByteBuffer buffer = glfwGetJoystickButtons(id.getGlfwValue());
 		if(buffer != null){
-			byte[] buttonArray = buffer.array();
+			byte[] buttonArray = toByteArray(buffer);
 			for(int i = 0; i < buttonArray.length; i++){
 				for(GamepadButton gpb : GamepadButton.values()){
 					if(i == gpb.getGlfwValue()){
@@ -70,7 +70,24 @@ public class Gamepad {
 		}
 	}
 	
+	private byte[] toByteArray(ByteBuffer bb) {
+        byte[] byteArray = new byte[bb.limit()];
+        bb.get(byteArray);
+
+        return byteArray;
+    }
+	
+	private float[] toFloatArray(FloatBuffer fb) {
+        float[] floatArray = new float[fb.limit()];
+        fb.get(floatArray);
+
+        return floatArray;
+    }
+	
 	private ButtonState getNextState(ButtonState oldState, byte pressed){
+		if(oldState == null) {
+			return ButtonState.UP;
+		}
 		switch(oldState){
 		case DOWN:
 			return pressed == 1 ? ButtonState.DOWN : ButtonState.RELEASED;
