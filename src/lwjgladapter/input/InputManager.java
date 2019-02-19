@@ -169,7 +169,7 @@ public class InputManager {
 	 * @return The current Mouse X-Coordinate inside the current window relative to the default window size.
 	 */
 	public double getRelativeMousePositionX(){
-		double result = mousePositionY * GameWindowConstants.getSCALE_FACTOR_X();
+		double result = mousePositionY / GameWindowConstants.getSCALE_FACTOR_X();
 		return result;
 	}
 	
@@ -178,7 +178,7 @@ public class InputManager {
 	 * @return The current Mouse Y-Coordinate inside the current window relative to the default window size.
 	 */
 	public double getRelativeMousePositionY(){
-		double result = mousePositionY * GameWindowConstants.getSCALE_FACTOR_Y();
+		double result = mousePositionY / GameWindowConstants.getSCALE_FACTOR_Y();
 		return result;
 	}
 	
