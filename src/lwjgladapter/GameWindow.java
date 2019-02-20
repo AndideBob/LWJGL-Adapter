@@ -65,11 +65,13 @@ public class GameWindow {
 	private boolean initialized;
 	private long deltaTime;
 	private long lastUpdateTime;
+	private int desiredFPS;
+	private long lastTime;
+	private long secondCounter;
 	private long fpsCounter;
-	private long timeLeftInSecond;
-	private long minMsPerFrame;
+	private long variableYieldTime;
 	
-	public GameWindow(int sizeX, int sizeY, Color clearColor, String title, long desiredFPS) {
+	public GameWindow(int sizeX, int sizeY, Color clearColor, String title, int desiredFPS) {
 		windowSizeX = sizeX;
 		windowSizeY = sizeY;
 		GameWindowConstants.setSCREEN_WIDTH(sizeX);
@@ -77,11 +79,10 @@ public class GameWindow {
 		windowTitle = title;
 		initialized = false;
 		this.clearColor = clearColor;
-		minMsPerFrame = (long) Math.round(1000f / desiredFPS);
-		Logger.logDebug("minMsPerFrame: " + minMsPerFrame);
+		this.desiredFPS = desiredFPS;
 		lastUpdateTime = System.currentTimeMillis();
-		timeLeftInSecond = 1000l;
-		fpsCounter = 0;
+		secondCounter = 1000l;
+		fpsCounter = 1;
 	}
 	
 	public void run(Game game) {
@@ -197,6 +198,7 @@ public class GameWindow {
 			
 			updateTime();
 			game.update(deltaTime);
+			sync(desiredFPS);
 			
 			if(game.isGameOver()){
 				glfwSetWindowShouldClose(window, true);
@@ -205,27 +207,64 @@ public class GameWindow {
 	}
 	
 	private void updateTime() throws InterruptedException{
-		//Limit FPS
 		long currentTime = System.currentTimeMillis();
 		deltaTime = currentTime - lastUpdateTime;
-		if(deltaTime < minMsPerFrame){
-			long waitTime = minMsPerFrame - deltaTime;
-			Logger.logDebug("Sleeping for: " + waitTime + "ms");
-			Thread.sleep(waitTime);
-		}
-		currentTime = System.currentTimeMillis();
-		deltaTime = currentTime - lastUpdateTime;
-		timeLeftInSecond -= deltaTime;
-		if(timeLeftInSecond <= 0){
+		lastUpdateTime = currentTime;
+		secondCounter -= deltaTime;
+		if(secondCounter <= 0){
+			secondCounter += 1000l;
 			GameWindowConstants.setCURRENT_FPS(fpsCounter);
-			Logger.logDebug("FPS: " + fpsCounter);
 			fpsCounter = 1;
-			timeLeftInSecond += 1000l;
 		}
 		else{
 			fpsCounter++;
 		}
-		lastUpdateTime = currentTime;
 	}
+	
+	/**
+     * An accurate sync method that adapts automatically
+     * to the system it runs on to provide reliable results.
+     *
+     * @param fps The desired frame rate, in frames per second
+     * @author kappa (On the LWJGL Forums)
+     */
+    private void sync(int fps) {
+        if (fps <= 0) return;
+         
+        long sleepTime = 1000000000 / fps; // nanoseconds to sleep this frame
+        // yieldTime + remainder micro & nano seconds if smaller than sleepTime
+        long yieldTime = Math.min(sleepTime, variableYieldTime + sleepTime % (1000*1000));
+        long overSleep = 0; // time the sync goes over by
+         
+        try {
+            while (true) {
+                long t = System.nanoTime() - lastTime;
+                 
+                if (t < sleepTime - yieldTime) {
+                    Thread.sleep(1);
+                }else if (t < sleepTime) {
+                    // burn the last few CPU cycles to ensure accuracy
+                    Thread.yield();
+                }else {
+                    overSleep = t - sleepTime;
+                    break; // exit while loop
+                }
+            }
+        } catch (InterruptedException e) {
+        	e.printStackTrace();
+        }finally{
+        	lastTime = System.nanoTime() - Math.min(overSleep, sleepTime);
+           
+            // auto tune the time sync should yield
+            if (overSleep > variableYieldTime) {
+                // increase by 200 microseconds (1/5 a ms)
+                variableYieldTime = Math.min(variableYieldTime + 200*1000, sleepTime);
+            }
+            else if (overSleep < variableYieldTime - 200*1000) {
+                // decrease by 2 microseconds
+                variableYieldTime = Math.max(variableYieldTime - 2*1000, 0);
+            }
+        }
+    }
 
 }
