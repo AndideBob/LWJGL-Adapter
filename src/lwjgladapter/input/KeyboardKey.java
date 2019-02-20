@@ -98,5 +98,8 @@ public enum KeyboardKey {
 	
 	public static final KeyboardKey[] numberButtons = {KEY_0, KEY_1, KEY_2, KEY_3, KEY_4, KEY_5, KEY_6, KEY_7, KEY_8, KEY_9};
 	
+	public static final KeyboardKey[] numPadButtons = {KEY_NUM0, KEY_NUM1, KEY_NUM2, KEY_NUM3, KEY_NUM4,
+			KEY_NUM5, KEY_NUM6, KEY_NUM7, KEY_NUM8, KEY_NUM9};
+	
 	public static final KeyboardKey[] functionButtons = {KEY_F1, KEY_F2, KEY_F3, KEY_F4, KEY_F5, KEY_F6, KEY_F7, KEY_F8, KEY_F9, KEY_F10, KEY_F11, KEY_F12};
 }
