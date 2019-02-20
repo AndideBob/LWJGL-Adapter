@@ -78,6 +78,7 @@ public class GameWindow {
 		initialized = false;
 		this.clearColor = clearColor;
 		minMsPerFrame = (long) Math.round(1000f / desiredFPS);
+		Logger.logDebug("minMsPerFrame: " + minMsPerFrame);
 		lastUpdateTime = System.currentTimeMillis();
 		timeLeftInSecond = 1000l;
 		fpsCounter = 0;
@@ -208,14 +209,17 @@ public class GameWindow {
 		long currentTime = System.currentTimeMillis();
 		deltaTime = currentTime - lastUpdateTime;
 		if(deltaTime < minMsPerFrame){
-			wait(minMsPerFrame - deltaTime);
+			long waitTime = minMsPerFrame - deltaTime;
+			Logger.logDebug("Sleeping for: " + waitTime + "ms");
+			Thread.sleep(waitTime);
 		}
 		currentTime = System.currentTimeMillis();
 		deltaTime = currentTime - lastUpdateTime;
 		timeLeftInSecond -= deltaTime;
 		if(timeLeftInSecond <= 0){
 			GameWindowConstants.setCURRENT_FPS(fpsCounter);
-			fpsCounter = 0;
+			Logger.logDebug("FPS: " + fpsCounter);
+			fpsCounter = 1;
 			timeLeftInSecond += 1000l;
 		}
 		else{
