@@ -11,6 +11,8 @@ public class GameWindowConstants {
 	private static float SCALE_FACTOR_X;
 	private static float SCALE_FACTOR_Y;
 	
+	private static long CURRENT_FPS;
+	
 	public static final String FILEPATH_DIRECTORY = System.getProperty("user.dir");
 	
 	static{
@@ -44,4 +46,11 @@ public class GameWindowConstants {
 		return SCALE_FACTOR_Y;
 	}
 
+	public static long getCURRENT_FPS() {
+		return CURRENT_FPS;
+	}
+
+	public static void setCURRENT_FPS(long cURRENT_FPS) {
+		CURRENT_FPS = cURRENT_FPS;
+	}
 }

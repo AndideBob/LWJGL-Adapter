@@ -61,9 +61,15 @@ public class GameWindow {
 	private String windowTitle;
 	private Color clearColor;
 	
-	private boolean initialized;
 	
-	public GameWindow(int sizeX, int sizeY, Color clearColor, String title) {
+	private boolean initialized;
+	private long deltaTime;
+	private long lastUpdateTime;
+	private long fpsCounter;
+	private long timeLeftInSecond;
+	private long minMsPerFrame;
+	
+	public GameWindow(int sizeX, int sizeY, Color clearColor, String title, long desiredFPS) {
 		windowSizeX = sizeX;
 		windowSizeY = sizeY;
 		GameWindowConstants.setSCREEN_WIDTH(sizeX);
@@ -71,6 +77,10 @@ public class GameWindow {
 		windowTitle = title;
 		initialized = false;
 		this.clearColor = clearColor;
+		minMsPerFrame = (long) Math.round(1000f / desiredFPS);
+		lastUpdateTime = System.currentTimeMillis();
+		timeLeftInSecond = 1000l;
+		fpsCounter = 0;
 	}
 	
 	public void run(Game game) {
@@ -151,7 +161,7 @@ public class GameWindow {
 		initialized = true;
 	}
 	
-	private void loop() {
+	private void loop() throws InterruptedException {
 		if(!initialized){
 			throw new IllegalStateException("Game Window must be initialized before running!");
 		}
@@ -184,12 +194,34 @@ public class GameWindow {
 			// invoked during this call.
 			input.update();
 			
-			game.update();
+			updateTime();
+			game.update(deltaTime);
 			
 			if(game.isGameOver()){
 				glfwSetWindowShouldClose(window, true);
 			}
 		}
+	}
+	
+	private void updateTime() throws InterruptedException{
+		//Limit FPS
+		long currentTime = System.currentTimeMillis();
+		deltaTime = currentTime - lastUpdateTime;
+		if(deltaTime < minMsPerFrame){
+			wait(minMsPerFrame - deltaTime);
+		}
+		currentTime = System.currentTimeMillis();
+		deltaTime = currentTime - lastUpdateTime;
+		timeLeftInSecond -= deltaTime;
+		if(timeLeftInSecond <= 0){
+			GameWindowConstants.setCURRENT_FPS(fpsCounter);
+			fpsCounter = 0;
+			timeLeftInSecond += 1000l;
+		}
+		else{
+			fpsCounter++;
+		}
+		lastUpdateTime = currentTime;
 	}
 
 }

@@ -18,7 +18,7 @@ public abstract class Game {
 
 	public abstract void loadResources();
 	
-	public abstract void update();
+	public abstract void update(long deltaTimeInMs);
 	
 	public abstract void draw();
 }
