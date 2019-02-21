@@ -43,6 +43,7 @@ import org.lwjgl.opengl.GL;
 import org.lwjgl.system.MemoryStack;
 
 import lwjgladapter.datatypes.Color;
+import lwjgladapter.datatypes.LWJGLAdapterException;
 import lwjgladapter.game.Game;
 import lwjgladapter.input.InputManager;
 import lwjgladapter.logging.LoggedErrorCallback;
@@ -167,42 +168,48 @@ public class GameWindow {
 		if(!initialized){
 			throw new IllegalStateException("Game Window must be initialized before running!");
 		}
-		// This line is critical for LWJGL's interoperation with GLFW's
-		// OpenGL context, or any context that is managed externally.
-		// LWJGL detects the context that is current in the current thread,
-		// creates the GLCapabilities instance and makes the OpenGL
-		// bindings available for use.
-		GL.createCapabilities();
-		
-		glEnable(GL_TEXTURE_2D);
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		
-		game.loadResources();
-
-		// Set the clear color
-		glClearColor(clearColor.getRed(), clearColor.getGreen(), clearColor.getBlue(), clearColor.getAlpha());
-
-		// Run the rendering loop until the user has attempted to close
-		// the window or has pressed the ESCAPE key.
-		while ( !glfwWindowShouldClose(window) ) {
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
+		try{
+			// This line is critical for LWJGL's interoperation with GLFW's
+			// OpenGL context, or any context that is managed externally.
+			// LWJGL detects the context that is current in the current thread,
+			// creates the GLCapabilities instance and makes the OpenGL
+			// bindings available for use.
+			GL.createCapabilities();
 			
-			game.draw();
-
-			glfwSwapBuffers(window); // swap the color buffers
-
-			// Poll for window events. The key callback above will only be
-			// invoked during this call.
-			input.update();
+			glEnable(GL_TEXTURE_2D);
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 			
-			updateTime();
-			game.update(deltaTime);
-			sync(desiredFPS);
-			
-			if(game.isGameOver()){
-				glfwSetWindowShouldClose(window, true);
+			game.loadResources();
+	
+			// Set the clear color
+			glClearColor(clearColor.getRed(), clearColor.getGreen(), clearColor.getBlue(), clearColor.getAlpha());
+	
+			// Run the rendering loop until the user has attempted to close
+			// the window or has pressed the ESCAPE key.
+			while ( !glfwWindowShouldClose(window) ) {
+				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
+				
+				game.draw();
+	
+				glfwSwapBuffers(window); // swap the color buffers
+	
+				// Poll for window events. The key callback above will only be
+				// invoked during this call.
+				input.update();
+				
+				updateTime();
+				game.update(deltaTime);
+				sync(desiredFPS);
+				
+				if(game.isGameOver()){
+					glfwSetWindowShouldClose(window, true);
+				}
 			}
+		}
+		catch(LWJGLAdapterException e){
+			Logger.logError(e);
+			glfwSetWindowShouldClose(window, true);
 		}
 	}
 	

@@ -39,7 +39,8 @@ public class Logger {
 	}
 	
 	public static void logError(Exception e){
-		String text = e.getMessage();
+		Throwable throwable = e.getCause();
+		String text = (throwable != null ? throwable.toString() : "") + e.getMessage();
 		for(StackTraceElement element : e.getStackTrace()){
 			text += "\n" + element.toString();
 		}

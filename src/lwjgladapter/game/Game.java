@@ -1,5 +1,7 @@
 package lwjgladapter.game;
 
+import lwjgladapter.datatypes.LWJGLAdapterException;
+
 public abstract class Game {
 	
 	protected boolean gameOver = false;
@@ -16,9 +18,9 @@ public abstract class Game {
 		gameOver = false;
 	}
 
-	public abstract void loadResources();
+	public abstract void loadResources() throws LWJGLAdapterException;
 	
-	public abstract void update(long deltaTimeInMs);
+	public abstract void update(long deltaTimeInMs) throws LWJGLAdapterException;
 	
-	public abstract void draw();
+	public abstract void draw() throws LWJGLAdapterException;
 }
