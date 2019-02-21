@@ -2,6 +2,7 @@ package lwjgladapter.physics.collision;
 
 import java.util.HashMap;
 
+import lwjgladapter.logging.Logger;
 import lwjgladapter.physics.collision.base.Collider;
 import lwjgladapter.physics.collision.base.CollisionKey;
 import lwjgladapter.physics.collision.exceptions.CollisionNotSupportedException;
@@ -9,11 +10,12 @@ import lwjgladapter.physics.collision.exceptions.DublicatePhysicsHelperException
 
 public class PhysicsHelper {
 	
-	public static PhysicsHelper instance = null;
+	private static PhysicsHelper instance = null;
 
 	private Long colliderCounter;
+	private HashMap<CollisionKey, Boolean> cachedCollisions = new HashMap<>();
 	
-	public PhysicsHelper() throws DublicatePhysicsHelperException{
+	private PhysicsHelper() throws DublicatePhysicsHelperException{
 		if(instance == null){
 			instance = this;
 			colliderCounter = Long.MIN_VALUE;
@@ -23,19 +25,28 @@ public class PhysicsHelper {
 		}
 	}
 	
+	public static PhysicsHelper getInstance(){
+		if(instance == null){
+			try {
+				return new PhysicsHelper();
+			} catch (DublicatePhysicsHelperException e) {
+				Logger.logError(e);
+			}
+		}
+		return instance;
+	}
+	
 	private long getNextColliderKey(){
 		long value = colliderCounter;
 		colliderCounter = (colliderCounter + 1) % Long.MAX_VALUE;
 		return value;
 	}
 	
-	private static HashMap<CollisionKey, Boolean> cachedCollisions = new HashMap<>();
-	
 	/**
 	 * Clears the cache for collisions. This should be called on each iteration of the game.
 	 */
 	
-	public static void resetCollisions(){
+	public void resetCollisions(){
 		cachedCollisions.clear();
 	}
 	
