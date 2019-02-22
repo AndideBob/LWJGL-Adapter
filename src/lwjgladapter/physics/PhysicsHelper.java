@@ -1,4 +1,4 @@
-package lwjgladapter.physics.collision;
+package lwjgladapter.physics;
 
 import java.util.HashMap;
 

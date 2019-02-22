@@ -8,7 +8,7 @@ public abstract class Collider {
 	private boolean wasKeySet = false;
 	
 	/**
-	 * This method should only be called by the {@link lwjgladapter.physics.collision.PhysicsHelper#generateCollisionKey(Collider, Collider) PhysicsHelper}
+	 * This method should only be called by the {@link lwjgladapter.physics.PhysicsHelper#generateCollisionKey(Collider, Collider) PhysicsHelper}
 	 * 
 	 * @param key They key used to identify this collider.
 	 */
@@ -30,7 +30,7 @@ public abstract class Collider {
 
 	/**
 	 * This method checks whether this collider intersects with another Collider. However this check is not commutative and should
-	 * therefor not be called by the game itself. The game should always call {@link lwjgladapter.physics.collision.PhysicsHelper#checkCollisionBetween(Collider, Collider) PhysicsHelper.checkCollisionBetween(ColliderA, ColliderB)}
+	 * therefor not be called by the game itself. The game should always call {@link lwjgladapter.physics.PhysicsHelper#checkCollisionBetween(Collider, Collider) PhysicsHelper.checkCollisionBetween(ColliderA, ColliderB)}
 	 * @param other The other Collider.
 	 * @return
 	 * @throws CollisionNotSupportedException
