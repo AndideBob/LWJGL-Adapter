@@ -29,9 +29,9 @@ public class Pixel {
 	}
 	
 	private void calculateHSL(){
-		float r = currentRed / 255f;
-		float g = currentGreen / 255f;
-		float b = currentBlue / 255f;
+		float r = fromByte(currentRed) / 255f;
+		float g = fromByte(currentGreen) / 255f;
+		float b = fromByte(currentBlue) / 255f;
 		float max = Math.max(r, Math.max(g, b));
 		float min = Math.min(r, Math.min(g, b));
 		boolean redIsMax = r >= g && r >= b;
@@ -72,54 +72,72 @@ public class Pixel {
 		int realDegrees = shift % 360;
 		if(realDegrees < 0) {realDegrees += 360;}
 		if(realDegrees != 0){
-			int actualHue = currentHue + realDegrees;
+			int actualHue = (currentHue + realDegrees) % 360;
 			if(saturation <= 0f){
-				currentRed = (byte)Math.round(luminance * 255f);
-				currentGreen = (byte)Math.round(luminance * 255f);
-				currentBlue = (byte)Math.round(luminance * 255f);
+				currentRed = toByte(Math.round(luminance * 255f));
+				currentGreen = toByte(Math.round(luminance * 255f));
+				currentBlue = toByte(Math.round(luminance * 255f));
 				return;
 			}
-			float temp_1 = (1f - Math.abs(2 * luminance - 1)) * saturation;
-			float temp_2 = temp_1 * (1f - Math.abs((Math.round(actualHue / 60) % 2) - 1f));
-			float r = 0f;
-			float g = 0f;
-			float b = 0f;
-			if(actualHue < 60){
-				r = temp_1;
-				g = temp_2;
-			}
-			else if(actualHue < 120){
-				r = temp_2;
-				g = temp_1;
-			}
-			else if(actualHue < 180){
-				g = temp_1;
-				b = temp_2;
-			}
-			else if(actualHue < 240){
-				g = temp_2;
-				b = temp_1;
-			}
-			else if(actualHue < 300){
-				r = temp_2;
-				b = temp_1;
+			double temp_1 = 0f;
+			if(luminance <= 0.5f){
+				temp_1 = luminance * (1f + saturation);
 			}
 			else{
-				r = temp_1;
-				b = temp_2;
+				temp_1 = luminance + saturation - (luminance * saturation);
 			}
-			float temp_3 = luminance - (temp_1 / 2);
-			currentRed = (byte)Math.min(0f, Math.max(Math.round((r + temp_3) * 255f), 255f));
-			currentGreen = (byte)Math.min(0f, Math.max(Math.round((g + temp_3) * 255f), 255f));
-			currentBlue = (byte)Math.min(0f, Math.max(Math.round((b + temp_3) * 255f), 255f));
+			double temp_2 = 2f * luminance - temp_1;
+			double hue = actualHue / 360f;
+			double temp_r = hue + 0.333333333f;
+			double temp_g = hue;
+			double temp_b = hue - 0.333333333f;
+			double r = convertTempColorValue(temp_1, temp_2, temp_r);
+			double g = convertTempColorValue(temp_1, temp_2, temp_g);
+			double b = convertTempColorValue(temp_1, temp_2, temp_b);
+			currentRed = toByte(Math.max(0f, Math.min(Math.round(r * 255f), 255f)));
+			currentGreen = toByte(Math.max(0f, Math.min(Math.round(g * 255f), 255f)));
+			currentBlue = toByte(Math.max(0f, Math.min(Math.round(b * 255f), 255f)));
 		}
 	}
 	
+	private double convertTempColorValue(double temp_1, double temp_2, double temp_color){
+		double color_val = (temp_color < 0) ? (temp_color + 1f) : ((temp_color > 1f) ? (temp_color - 1f) : temp_color);
+		double value = 0f;
+		if(6f * color_val < 1){
+			value = temp_2 + (temp_1 - temp_2) * 6f * color_val;
+		}
+		else if(2f * color_val < 1){
+			value = temp_1;
+		}
+		else if(3f * color_val < 2){
+			value = temp_2 + (temp_1 - temp_2) * (0.66666666f - color_val) * 6f;
+		}
+		else{
+			value = temp_2;
+		}
+		return value;
+	}
+	
 	private void setColorValues(float precentageRed, float precentageGreen, float precentageBlue, float precentageAlpha){
-		currentRed = (byte) (Math.floor(originalRed * precentageRed));
-		currentGreen = (byte) (Math.floor(originalGreen * precentageGreen));
-		currentBlue = (byte) (Math.floor(originalBlue * precentageBlue));
-		currentAlpha = (byte) (Math.floor(originalAlpha * precentageAlpha));
+		currentRed = toByte(fromByte(originalRed) * precentageRed);
+		currentGreen = toByte(fromByte(originalGreen) * precentageGreen);
+		currentBlue = toByte(fromByte(originalBlue) * precentageBlue);
+		currentAlpha = toByte(fromByte(originalAlpha) * precentageAlpha);
+	}
+	
+	private static int fromByte(byte value){
+		int result = value;
+		return result + 128;
+	}
+	
+	private static byte toByte(int value){
+		int result = value - 128;
+		return (byte)result;
+	}
+	
+	private static byte toByte(float value){
+		float result = value - 128f;
+		return (byte) Math.floor(result);
 	}
 
 	public byte getOriginalRed() {
