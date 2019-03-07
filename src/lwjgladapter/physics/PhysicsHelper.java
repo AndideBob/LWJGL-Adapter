@@ -1,9 +1,11 @@
 package lwjgladapter.physics;
 
 import java.util.HashMap;
+import java.util.HashSet;
 
 import lwjgladapter.logging.Logger;
 import lwjgladapter.physics.collision.base.Collider;
+import lwjgladapter.physics.collision.base.Collision;
 import lwjgladapter.physics.collision.base.CollisionKey;
 import lwjgladapter.physics.collision.exceptions.CollisionNotSupportedException;
 import lwjgladapter.physics.collision.exceptions.DublicatePhysicsHelperException;
@@ -12,13 +14,14 @@ public class PhysicsHelper {
 	
 	private static PhysicsHelper instance = null;
 
-	private Long colliderCounter;
-	private HashMap<CollisionKey, Boolean> cachedCollisions = new HashMap<>();
+	private static Long colliderCounter = 0L;
+	private HashMap<CollisionKey, Collision> cachedCollisions = new HashMap<>();
+	
+	private HashSet<Collider> registeredColliders = new HashSet<>();
 	
 	private PhysicsHelper() throws DublicatePhysicsHelperException{
 		if(instance == null){
 			instance = this;
-			colliderCounter = Long.MIN_VALUE;
 		}
 		else{
 			throw new DublicatePhysicsHelperException("PhysicsHelper is a Singleton Object and it can only be initialized once!");
@@ -36,7 +39,7 @@ public class PhysicsHelper {
 		return instance;
 	}
 	
-	private long getNextColliderKey(){
+	public static long getNextColliderID(){
 		long value = colliderCounter;
 		colliderCounter = (colliderCounter + 1) % Long.MAX_VALUE;
 		return value;
@@ -51,41 +54,73 @@ public class PhysicsHelper {
 	}
 	
 	/**
-	 * This method is used to determine whether two colliders are intersecting. Collisions are being cached
+	 * Checks collisions for all active colliders.
+	 */
+	
+	public void checkCollisions(){
+		for(Collider colliderA : registeredColliders){
+			for(Collider colliderB : registeredColliders){
+				try {
+					Collision collision = getCollisionInternally(colliderA, colliderB);
+					CollisionKey key = collision == null ? generateCollisionKey(colliderA, colliderB) : collision.getKey();
+					if(!cachedCollisions.containsKey(key)){
+						cachedCollisions.put(key, collision);
+					}
+				} catch (CollisionNotSupportedException e) {
+					Logger.logError(e);
+				}
+			}
+		}
+	}
+	
+	private Collision getCollisionInternally(Collider colliderA, Collider colliderB) throws CollisionNotSupportedException{
+		Collision collision = checkCollisionBetween(colliderA, colliderB);
+		if(collision != null){
+			return collision;
+		}
+		try{
+			collision = colliderA.getCollisionWith(colliderB);
+		}
+		catch(CollisionNotSupportedException e){// Try checking collision in reverse for missing Implementations
+			collision = colliderB.getCollisionWith(colliderA);
+		}
+		return collision;
+	}
+	
+	/**
+	 * This method is used to determine whether two colliders are intersecting. Collisions first need to be updated using
+	 * {@link #checkCollisions() checkCollisions}. Collisions are then being cached
 	 * and need to be reset using {@link #resetCollisions() resetCollisions}.
 	 * Collisions are being checked commutatively which means the order in which the parameters are passed in
 	 * do not matter.
 	 * 
 	 * @param colliderA The first collider.
 	 * @param colliderB The second collider.
-	 * @return Return whether the two colliders are intersecting.
+	 * @return Returns a collision between the two colliders, or NULL if no collision has occured.
 	 * @throws CollisionNotSupportedException This exception is thrown if neither collider implements checking for an intersection
 	 * with the other
 	 */
 	
-	public boolean checkCollisionBetween(Collider colliderA, Collider colliderB) throws CollisionNotSupportedException{
+	public Collision checkCollisionBetween(Collider colliderA, Collider colliderB) throws CollisionNotSupportedException{
+		if(!colliderA.isActive() || !colliderB.isActive()){
+			return null;
+		}
 		CollisionKey key = generateCollisionKey(colliderA, colliderB);
 		if(cachedCollisions.containsKey(key)){
 			return cachedCollisions.get(key);
 		}
-		Boolean collision = Boolean.FALSE;
-		try{
-			collision = colliderA.intersects(colliderB);
-		}
-		catch(CollisionNotSupportedException e){// Try checking collision in reverse for missing Implementations
-			collision = colliderB.intersects(colliderA);
-		}
-		cachedCollisions.put(key, collision);
-		return collision;
+		return null;
 	}
 
-	private CollisionKey generateCollisionKey(Collider colliderA, Collider colliderB){
-		if(!colliderA.wasKeySet()){
-			colliderA.setKey(getNextColliderKey());
-		}
-		if(!colliderB.wasKeySet()){
-			colliderB.setKey(getNextColliderKey());
-		}
-		return new CollisionKey(colliderA.getKey(), colliderB.getKey());
+	public static CollisionKey generateCollisionKey(Collider colliderA, Collider colliderB){
+		return new CollisionKey(colliderA.getID(), colliderB.getID());
+	}
+
+	public void registerCollider(Collider collider) {
+		registeredColliders.add(collider);
+	}
+
+	public void unregisterCollider(Collider collider) {
+		registeredColliders.remove(collider);
 	}
 }
