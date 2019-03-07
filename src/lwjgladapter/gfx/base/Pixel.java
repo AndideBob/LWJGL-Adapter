@@ -62,13 +62,8 @@ public class Pixel {
 		currentHue = (int) Math.floor(h * 60f);
 	}
 	
-	public void setValues(float precentageRed, float precentageGreen, float precentageBlue, float precentageAlpha, int hueShift){
-		setColorValues(precentageRed, precentageGreen, precentageBlue, precentageAlpha);
+	public void setHueShift(int shift){
 		calculateHSL();
-		setHueShift(hueShift);
-	}
-	
-	private void setHueShift(int shift){
 		int realDegrees = shift % 360;
 		if(realDegrees < 0) {realDegrees += 360;}
 		if(realDegrees != 0){
@@ -118,21 +113,13 @@ public class Pixel {
 		return value;
 	}
 	
-	private void setColorValues(float precentageRed, float precentageGreen, float precentageBlue, float precentageAlpha){
-		currentRed = toByte(fromByte(originalRed) * precentageRed);
-		currentGreen = toByte(fromByte(originalGreen) * precentageGreen);
-		currentBlue = toByte(fromByte(originalBlue) * precentageBlue);
-		currentAlpha = toByte(fromByte(originalAlpha) * precentageAlpha);
-	}
-	
 	private static int fromByte(byte value){
 		int result = value;
 		return result + 128;
 	}
 	
 	private static byte toByte(int value){
-		int result = value - 128;
-		return (byte)result;
+		return (byte)value;
 	}
 	
 	private static byte toByte(float value){

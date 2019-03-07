@@ -14,6 +14,7 @@ import static org.lwjgl.opengl.GL11.glTexCoord2f;
 import static org.lwjgl.opengl.GL11.glTexImage2D;
 import static org.lwjgl.opengl.GL11.glTexParameterf;
 import static org.lwjgl.opengl.GL11.glVertex2f;
+import static org.lwjgl.opengl.GL11.glColor4f;
 
 import java.nio.ByteBuffer;
 
@@ -118,7 +119,7 @@ public final class Texture {
 		for(int y = 0; y < height; y++){
 			for(int x = 0; x < width; x++){
 				Pixel p = pixels[y * width + x];
-				p.setValues(redValue, greenValue, blueValue, alphaValue, hueShift);
+				p.setHueShift(hueShift);
 				pixelBuffer.put(p.getCurrentRed()); //R
 				pixelBuffer.put(p.getCurrentGreen());  //G
 				pixelBuffer.put(p.getCurrentBlue());       //B
@@ -151,6 +152,7 @@ public final class Texture {
 		float maxY = (2f * (actualY + actualHeight)) / GameWindowConstants.getSCREEN_HEIGHT() - 1f;
 		
 		bind();
+		glColor4f(getRedValue(), getGreenValue(), getBlueValue(), getAlphaValue());
 		glBegin(GL_QUADS);
 			glTexCoord2f(0, 0);
 			glVertex2f(minX, maxY);
