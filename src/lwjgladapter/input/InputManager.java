@@ -96,6 +96,15 @@ public class InputManager {
 	
 	// GETTERS
 	
+	public boolean isGamepadPluggedIn(GamepadID gamepadID){
+		for(Gamepad gamepad : gamepads){
+			if(gamepad.getID().equals(gamepadID)){
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	public ButtonState getGamepadButtonState(GamepadID gamepadID, GamepadButton button){
 		for(Gamepad gamepad : gamepads){
 			if(gamepad.getID().equals(gamepadID)){
