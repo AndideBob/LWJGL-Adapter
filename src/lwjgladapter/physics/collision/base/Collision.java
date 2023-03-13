@@ -1,36 +1,25 @@
 package lwjgladapter.physics.collision.base;
 
+import lombok.Getter;
+import lwjgladapter.maths.vectors.Vector2;
+
+@Getter
 public class Collision {
 
 	private CollisionKey key;
-	
-	int positionX;
-	
-	int positionY;
+
+	private Vector2 position;
 
 	public Collision(CollisionKey key, int positionX, int positionY) {
 		this.key = key;
-		this.positionX = positionX;
-		this.positionY = positionY;
-	}
-	
-	public CollisionKey getKey() {
-		return key;
-	}
-
-	public int getPositionX() {
-		return positionX;
-	}
-
-	public int getPositionY() {
-		return positionY;
+		position = new Vector2(positionX, positionY);
 	}
 
 	public long getOtherID(long originalColliderID) {
-		if(key.getObjectAID() == originalColliderID){
-			return key.getObjectBID();
+		if(key.objectAID() == originalColliderID){
+			return key.objectBID();
 		}
-		return key.getObjectAID();
+		return key.objectAID();
 	}
 
 	@Override
@@ -51,10 +40,7 @@ public class Collision {
 			return false;
 		Collision other = (Collision) obj;
 		if (key == null) {
-			if (other.key != null)
-				return false;
-		} else if (!key.equals(other.key))
-			return false;
-		return true;
+			return other.key == null;
+		} else return key.equals(other.key);
 	}
 }

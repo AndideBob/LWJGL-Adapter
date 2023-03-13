@@ -8,3 +8,6 @@
 /.settings/
 .class
 /target/
+.idea
+
+!.idea/.gitignore

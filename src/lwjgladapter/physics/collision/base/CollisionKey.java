@@ -1,24 +1,6 @@
 package lwjgladapter.physics.collision.base;
 
-public class CollisionKey {
-
-	private long objectAID;
-	
-	private long objectBID;
-
-	public CollisionKey(long objectAID, long objectBID) {
-		this.objectAID = objectAID;
-		this.objectBID = objectBID;
-	}
-
-	public long getObjectAID() {
-		return objectAID;
-	}
-	
-	public long getObjectBID() {
-		return objectBID;
-	}
-
+public record CollisionKey(long objectAID, long objectBID) {
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -45,11 +27,8 @@ public class CollisionKey {
 		long maxOther = Math.max(other.objectAID, other.objectBID);
 		if (minThis != minOther)
 			return false;
-		if (maxThis != maxOther)
-			return false;
-		return true;
+		return maxThis == maxOther;
 	}
-	
-	
+
 
 }
