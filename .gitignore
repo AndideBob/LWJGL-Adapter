@@ -3,8 +3,7 @@
 /LWJGL_Adapter_EclipseSource.zip
 /.classpath
 /testResources/
-/src/lwjgladapter/test
-/src/lwjgladapter/Main.java
+/src/main/java/lwjgladapter/Main.java
 /.settings/
 .class
 /target/
