@@ -28,7 +28,10 @@ public class Vector2GridIterator implements Iterator<Vector2> {
 
     @Override
     public boolean hasNext() {
-        return currentX <= maxX && currentY <= maxY;
+        if (currentY < maxY) {
+            return true;
+        }
+        return currentX <= maxX;
     }
 
     @Override
