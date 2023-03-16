@@ -2,6 +2,8 @@ package lwjgladapter.gfx;
 
 import lwjgladapter.gfx.base.Pixel;
 import lwjgladapter.gfx.base.Texture;
+import lwjgladapter.gfx.camera.Camera2D;
+import lwjgladapter.maths.shapes.Rect;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -72,5 +74,16 @@ public class Sprite {
 
     public void draw(int x, int y, float scaleX, float scaleY) {
         texture.draw(x, y, scaleX, scaleY);
+    }
+
+    public void drawForCamera(Camera2D camera, int x, int y) {
+        drawForCamera(camera, x, y, 1f, 1f);
+    }
+
+    public void drawForCamera(Camera2D camera, int x, int y, float scaleX, float scaleY) {
+        Rect boundaries = new Rect(x, y, (int) Math.ceil(texture.getWidth() * scaleX), (int) Math.ceil(texture.getHeight() * scaleY));
+        if (camera.getViewPort().intersects(boundaries)) {
+            texture.draw(x, y, scaleX, scaleY);
+        }
     }
 }

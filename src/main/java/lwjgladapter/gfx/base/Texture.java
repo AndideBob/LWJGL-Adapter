@@ -13,7 +13,9 @@ public final class Texture {
     private static final float valueAccuracyThreshold = 0.01f;
 
     private final int id;
+    @Getter
     private final int width;
+    @Getter
     private final int height;
 
     private final Pixel[] pixels;
