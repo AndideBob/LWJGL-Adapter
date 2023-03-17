@@ -3,7 +3,10 @@ package lwjgladapter.gfx;
 import lombok.Getter;
 import lwjgladapter.gfx.base.Pixel;
 import lwjgladapter.gfx.base.Texture;
+import lwjgladapter.gfx.camera.Camera2D;
+import lwjgladapter.gfx.utils.TextureUtils;
 import lwjgladapter.logging.Logger;
+import lwjgladapter.maths.shapes.Rect;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -101,14 +104,25 @@ public class SpriteMap {
         draw(tile, x, y, 1f, 1f);
     }
 
-    public boolean draw(int tile, int x, int y, float scaleX, float scaleY) {
+    public void draw(int tile, int x, int y, float scaleX, float scaleY) {
         Texture texture = textureMap.get(tile);
         if (texture != null) {
             texture.draw(x, y, scaleX, scaleY);
-            return true;
         }
+    }
 
-        return false;
+    public void drawForCamera(Camera2D camera, int tile, int x, int y) {
+        drawForCamera(camera, tile, x, y, 1f, 1f);
+    }
+
+    public void drawForCamera(Camera2D camera, int tile, int x, int y, float scaleX, float scaleY) {
+        Texture texture = textureMap.get(tile);
+        if (texture != null) {
+            Rect boundaries = TextureUtils.getBoundariesForTexture(texture, x, y, scaleX, scaleY);
+            if (camera.getViewPort().intersects(boundaries)) {
+                texture.draw(x - camera.getPosition().x, y - camera.getPosition().y, scaleX, scaleY);
+            }
+        }
     }
 
 }

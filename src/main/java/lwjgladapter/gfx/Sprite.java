@@ -1,8 +1,10 @@
 package lwjgladapter.gfx;
 
+import lwjgladapter.datatypes.LWJGLAdapterException;
 import lwjgladapter.gfx.base.Pixel;
 import lwjgladapter.gfx.base.Texture;
 import lwjgladapter.gfx.camera.Camera2D;
+import lwjgladapter.gfx.utils.TextureUtils;
 import lwjgladapter.maths.shapes.Rect;
 
 import javax.imageio.ImageIO;
@@ -14,7 +16,7 @@ import static org.lwjgl.opengl.GL11.glGenTextures;
 
 public class Sprite {
 
-    private Texture texture;
+    private final Texture texture;
 
     public Sprite(String filename) {
         BufferedImage bi;
@@ -36,7 +38,7 @@ public class Sprite {
 
             texture.loadIntoMemory();
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new LWJGLAdapterException(String.format("Error loading texture from '%s'!", filename), e);
         }
     }
 
@@ -81,9 +83,9 @@ public class Sprite {
     }
 
     public void drawForCamera(Camera2D camera, int x, int y, float scaleX, float scaleY) {
-        Rect boundaries = new Rect(x, y, (int) Math.ceil(texture.getWidth() * scaleX), (int) Math.ceil(texture.getHeight() * scaleY));
+        Rect boundaries = TextureUtils.getBoundariesForTexture(texture, x, y, scaleX, scaleY);
         if (camera.getViewPort().intersects(boundaries)) {
-            texture.draw(x, y, scaleX, scaleY);
+            texture.draw(x - camera.getPosition().x, y - camera.getPosition().y, scaleX, scaleY);
         }
     }
 }

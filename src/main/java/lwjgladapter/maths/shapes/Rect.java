@@ -17,12 +17,16 @@ public class Rect {
     public final int right;
     public final int top;
     public final int bottom;
+    public final int width;
+    public final int height;
 
     public Rect(int x, int y, int width, int height) {
         if (width < 1 || height < 1) {
             throw new IllegalArgumentException("Rect Size has to be greater than 1");
         }
         position = new Vector2(x, y);
+        this.width = width;
+        this.height = height;
         size = new Vector2(width, height);
         left = x;
         right = x + width;
