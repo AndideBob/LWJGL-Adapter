@@ -42,19 +42,19 @@ public class Vector2Float extends Vector2<Float> {
         return new Vector2Float(1, 1);
     }
 
-    public static Vector2Float negate(Vector2Float original) {
+    public static Vector2Float negate(Vector2<Float> original) {
         return new Vector2Float(-original.getX(), -original.getY());
     }
 
-    public static Vector2Float add(Vector2Float a, Vector2Float b) {
+    public static Vector2Float add(Vector2<Float> a, Vector2<Float> b) {
         return new Vector2Float(a.getX() + b.getX(), a.getY() + b.getY());
     }
 
-    public static Vector2Float subtract(Vector2Float a, Vector2Float b) {
+    public static Vector2Float subtract(Vector2<Float> a, Vector2<Float> b) {
         return new Vector2Float(a.getX() - b.getX(), a.getY() - b.getY());
     }
 
-    public static Vector2Float multiply(Vector2Float vector, double value) {
+    public static Vector2Float multiply(Vector2<Float> vector, double value) {
         return new Vector2Float((int) Math.round(value * vector.getX()), (int) Math.round(value * vector.getY()));
     }
 

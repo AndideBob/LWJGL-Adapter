@@ -32,7 +32,6 @@ class Vector2IntGridIteratorTest {
         List<Vector2Int> actual = new ArrayList<>();
         for (Vector2IntGridIterator it = new Vector2IntGridIterator(3, 3); it.hasNext(); ) {
             Vector2Int pos = it.next();
-            System.out.println("next: " + pos);
             actual.add(pos);
         }
         assertEquals(expectedList.length, actual.size());

@@ -42,19 +42,19 @@ public class Vector2Int extends Vector2<Integer> {
         return new Vector2Int(1, 1);
     }
 
-    public static Vector2Int negate(Vector2Int original) {
+    public static Vector2Int negate(Vector2<Integer> original) {
         return new Vector2Int(-original.getX(), -original.getY());
     }
 
-    public static Vector2Int add(Vector2Int a, Vector2Int b) {
+    public static Vector2Int add(Vector2<Integer> a, Vector2<Integer> b) {
         return new Vector2Int(a.getX() + b.getX(), a.getY() + b.getY());
     }
 
-    public static Vector2Int subtract(Vector2Int a, Vector2Int b) {
+    public static Vector2Int subtract(Vector2<Integer> a, Vector2<Integer> b) {
         return new Vector2Int(a.getX() - b.getX(), a.getY() - b.getY());
     }
 
-    public static Vector2Int multiply(Vector2Int vector, double value) {
+    public static Vector2Int multiply(Vector2<Integer> vector, double value) {
         return new Vector2Int((int) Math.round(value * vector.getX()), (int) Math.round(value * vector.getY()));
     }
 
