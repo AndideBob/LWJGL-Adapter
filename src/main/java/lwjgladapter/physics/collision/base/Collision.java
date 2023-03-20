@@ -1,18 +1,18 @@
 package lwjgladapter.physics.collision.base;
 
 import lombok.Getter;
-import lwjgladapter.maths.vectors.Vector2;
+import lwjgladapter.maths.vectors.Vector2Int;
 
 @Getter
 public class Collision {
 
 	private CollisionKey key;
 
-	private Vector2 position;
+	private Vector2Int position;
 
 	public Collision(CollisionKey key, int positionX, int positionY) {
 		this.key = key;
-		position = new Vector2(positionX, positionY);
+		position = new Vector2Int(positionX, positionY);
 	}
 
 	public long getOtherID(long originalColliderID) {

@@ -1,54 +1,61 @@
 package lwjgladapter.maths.shapes;
 
-import lombok.Getter;
 import lwjgladapter.maths.vectors.Vector2;
-import lwjgladapter.maths.vectors.Vector2GridIterator;
+import lwjgladapter.maths.vectors.Vector2Int;
 
 import java.util.Objects;
 
-public class Rect {
+public abstract class Rect<N extends Number> {
+    protected final float x;
+    protected final float y;
+    protected final float left;
+    protected final float right;
+    protected final float top;
+    protected final float bottom;
+    protected final float width;
+    protected final float height;
 
-    @Getter
-    private final Vector2 position;
-    @Getter
-    private final Vector2 size;
-
-    public final int left;
-    public final int right;
-    public final int top;
-    public final int bottom;
-    public final int width;
-    public final int height;
-
-    public Rect(int x, int y, int width, int height) {
-        if (width < 1 || height < 1) {
+    public Rect(N x, N y, N width, N height) {
+        if (!(width.floatValue() > 0) || !(height.floatValue() > 0)) {
             throw new IllegalArgumentException("Rect Size has to be greater than 1");
         }
-        position = new Vector2(x, y);
-        this.width = width;
-        this.height = height;
-        size = new Vector2(width, height);
-        left = x;
-        right = x + width;
-        bottom = y;
-        top = y + height;
+        this.x = x.floatValue();
+        this.y = y.floatValue();
+        this.width = width.floatValue();
+        this.height = height.floatValue();
+        left = x.floatValue();
+        right = x.floatValue() + width.floatValue();
+        bottom = y.floatValue();
+        top = y.floatValue() + height.floatValue();
     }
 
-    public Vector2 getOuterPoint() {
-        return new Vector2(right, top);
+    public abstract Vector2<N> getPosition();
+
+    public abstract Vector2<N> getSize();
+
+    public abstract N getX();
+
+    public abstract N getY();
+
+    public abstract N getWidth();
+
+    public abstract N getHeight();
+
+    public abstract N getLeft();
+
+    public abstract N getRight();
+
+    public abstract N getTop();
+
+    public abstract N getBottom();
+
+    public final float getArea() {
+        return width * height;
     }
 
-    public int getArea() {
-        return size.x * size.y;
-    }
-
-    public Vector2GridIterator getContainedPoints() {
-        return new Vector2GridIterator(left, right, bottom, top);
-    }
-
-    public boolean contains(Vector2 point) {
-        return point.x >= left && point.x <= right
-                && point.y >= bottom && point.y <= top;
+    public boolean contains(Vector2Int point) {
+        return point.getX() >= left && point.getX() <= right
+                && point.getY() >= bottom && point.getY() <= top;
     }
 
     public boolean intersects(Rect other) {
@@ -60,12 +67,12 @@ public class Rect {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Rect rect = (Rect) o;
-        return position.equals(rect.position) && size.equals(rect.size);
+        Rect<?> rect = (Rect<?>) o;
+        return Float.compare(rect.x, x) == 0 && Float.compare(rect.y, y) == 0 && Float.compare(rect.width, width) == 0 && Float.compare(rect.height, height) == 0;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(position, size);
+        return Objects.hash(x, y, width, height);
     }
 }

@@ -120,7 +120,7 @@ public class SpriteMap {
         if (texture != null) {
             Rect boundaries = TextureUtils.getBoundariesForTexture(texture, x, y, scaleX, scaleY);
             if (camera.getViewPort().intersects(boundaries)) {
-                texture.draw(x - camera.getPosition().x, y - camera.getPosition().y, scaleX, scaleY);
+                texture.draw(x - camera.getPosition().getX(), y - camera.getPosition().getY(), scaleX, scaleY);
             }
         }
     }

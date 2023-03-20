@@ -2,7 +2,7 @@ package lwjgladapter.physics.collision.base;
 
 import lombok.Getter;
 import lombok.Setter;
-import lwjgladapter.maths.vectors.Vector2;
+import lwjgladapter.maths.vectors.Vector2Int;
 import lwjgladapter.physics.PhysicsHelper;
 import lwjgladapter.physics.collision.exceptions.CollisionNotSupportedException;
 
@@ -14,7 +14,7 @@ public abstract class Collider {
 
     @Getter
     @Setter
-    private Vector2 position;
+    private Vector2Int position;
     @Getter
     @Setter
     private boolean active;
@@ -24,7 +24,7 @@ public abstract class Collider {
      *
      * @param id
      */
-    public Collider(long id, Vector2 position) {
+    public Collider(long id, Vector2Int position) {
         setID(id);
         this.position = position;
     }

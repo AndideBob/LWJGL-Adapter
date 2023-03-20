@@ -1,94 +1,61 @@
 package lwjgladapter.maths.vectors;
 
-import lombok.AllArgsConstructor;
+public abstract class Vector2<N extends Number> {
 
-import java.util.Objects;
+    protected float x;
+    protected float y;
 
-@AllArgsConstructor
-public class Vector2 {
-    public int x;
-    public int y;
-
-    public static Vector2 zero() {
-        return new Vector2(0, 0);
+    public Vector2() {
+        x = 0;
+        y = 0;
     }
 
-    public static Vector2 up() {
-        return new Vector2(0, 1);
+    protected Vector2(N x, N y) {
+        set(x, y);
     }
 
-    public static Vector2 right() {
-        return new Vector2(1, 0);
+    public abstract N getX();
+
+    public abstract N getY();
+
+    public final void setX(N value) {
+        x = value.floatValue();
     }
 
-    public static Vector2 down() {
-        return new Vector2(0, -1);
+    public final void setY(N value) {
+        y = value.floatValue();
     }
 
-    public static Vector2 left() {
-        return new Vector2(-1, 0);
+    public final void set(N x, N y) {
+        this.x = x.floatValue();
+        this.y = y.floatValue();
     }
 
-    public static Vector2 one() {
-        return new Vector2(1, 1);
+    public final Vector2<N> add(Vector2<N> other) {
+        x += other.getX().floatValue();
+        y += other.getY().floatValue();
+        return this;
     }
 
-    public Vector2 negate() {
+    public final Vector2<N> subtract(Vector2<N> other) {
+        x -= other.getX().floatValue();
+        y -= other.getY().floatValue();
+        return this;
+    }
+
+    public final Vector2<N> multiply(double value) {
+        x *= value;
+        y *= value;
+        return this;
+    }
+
+    public final Vector2<N> negate() {
         x = -x;
         y = -y;
         return this;
     }
 
-    public Vector2 add(Vector2 other) {
-        x += other.x;
-        y += other.y;
-        return this;
-    }
-
-    public Vector2 subtract(Vector2 other) {
-        x -= other.x;
-        y -= other.y;
-        return this;
-    }
-
-    public Vector2 multiply(double value) {
-        x = (int) Math.round(value * x);
-        y = (int) Math.round(value * y);
-        return this;
-    }
-
-    public static Vector2 negate(Vector2 original) {
-        return new Vector2(-original.x, -original.y);
-    }
-
-    public static Vector2 add(Vector2 a, Vector2 b) {
-        return new Vector2(a.x + b.x, a.y + b.y);
-    }
-
-    public static Vector2 subtract(Vector2 a, Vector2 b) {
-        return new Vector2(a.x - b.x, a.y - b.y);
-    }
-
-    public static Vector2 multiply(Vector2 vector, double value) {
-        return new Vector2((int) Math.round(value * vector.x), (int) Math.round(value * vector.y));
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Vector2 vector2 = (Vector2) o;
-        return x == vector2.x && y == vector2.y;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(x, y);
-    }
-
-    @Override
-    public String toString() {
-        return String.format("[%d|%d]", x, y);
+    public final double getLength() {
+        return Math.sqrt(x * x + y * y);
     }
 }
-

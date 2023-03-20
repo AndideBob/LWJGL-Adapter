@@ -2,7 +2,7 @@ package lwjgladapter.physics.collision;
 
 import lombok.Getter;
 import lombok.Setter;
-import lwjgladapter.maths.vectors.Vector2;
+import lwjgladapter.maths.vectors.Vector2Int;
 import lwjgladapter.physics.PhysicsHelper;
 import lwjgladapter.physics.collision.base.Collider;
 import lwjgladapter.physics.collision.base.Collision;
@@ -16,10 +16,10 @@ public class RectCollider extends Collider {
     private int height;
 
     public RectCollider(int positionX, int positionY, int width, int height) {
-        this(new Vector2(positionX, positionY), width, height);
+        this(new Vector2Int(positionX, positionY), width, height);
     }
 
-    public RectCollider(Vector2 position, int width, int height) {
+    public RectCollider(Vector2Int position, int width, int height) {
         super(PhysicsHelper.getNextColliderID(), position);
         this.width = width;
         this.height = height;
@@ -34,10 +34,10 @@ public class RectCollider extends Collider {
     }
 
     private Collision intersectsWithRect(RectCollider other) {
-        int intersectionXLeft = Math.max(getPosition().x, other.getPosition().x);
-        int intersectionYBottom = Math.max(getPosition().y, other.getPosition().y);
-        int intersectionXRight = Math.min(getPosition().x + getWidth(), other.getPosition().x + other.getWidth());
-        int intersectionYTop = Math.min(getPosition().y + getHeight(), other.getPosition().y + other.getHeight());
+        int intersectionXLeft = Math.max(getPosition().getX(), other.getPosition().getX());
+        int intersectionYBottom = Math.max(getPosition().getY(), other.getPosition().getY());
+        int intersectionXRight = Math.min(getPosition().getX() + getWidth(), other.getPosition().getX() + other.getWidth());
+        int intersectionYTop = Math.min(getPosition().getY() + getHeight(), other.getPosition().getY() + other.getHeight());
         if (intersectionXLeft < intersectionXRight && intersectionYBottom < intersectionYTop) {
             int intersectionWidth = intersectionXRight - intersectionXLeft;
             int intersectionHeight = intersectionYBottom - intersectionYTop;

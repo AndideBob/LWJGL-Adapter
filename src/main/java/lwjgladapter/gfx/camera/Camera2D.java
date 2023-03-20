@@ -2,26 +2,26 @@ package lwjgladapter.gfx.camera;
 
 import lombok.Getter;
 import lwjgladapter.GameWindowConstants;
-import lwjgladapter.maths.shapes.Rect;
-import lwjgladapter.maths.vectors.Vector2;
+import lwjgladapter.maths.shapes.RectInt;
+import lwjgladapter.maths.vectors.Vector2Int;
 
 @Getter
 public class Camera2D {
 
-    private Vector2 position;
+    private Vector2Int position;
 
-    private Rect viewPort;
+    private RectInt viewPort;
 
-    public Camera2D(Vector2 position) {
+    public Camera2D(Vector2Int position) {
         setPosition(position);
     }
 
-    public void setPosition(Vector2 position) {
+    public void setPosition(Vector2Int position) {
         this.position = position;
         updateViewPort();
     }
 
     private void updateViewPort() {
-        viewPort = new Rect(position.x, position.y, GameWindowConstants.DEFAULT_SCREEN_WIDTH, GameWindowConstants.DEFAULT_SCREEN_HEIGHT);
+        viewPort = new RectInt(position.getX(), position.getY(), GameWindowConstants.DEFAULT_SCREEN_WIDTH, GameWindowConstants.DEFAULT_SCREEN_HEIGHT);
     }
 }

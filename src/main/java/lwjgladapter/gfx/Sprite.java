@@ -85,7 +85,7 @@ public class Sprite {
     public void drawForCamera(Camera2D camera, int x, int y, float scaleX, float scaleY) {
         Rect boundaries = TextureUtils.getBoundariesForTexture(texture, x, y, scaleX, scaleY);
         if (camera.getViewPort().intersects(boundaries)) {
-            texture.draw(x - camera.getPosition().x, y - camera.getPosition().y, scaleX, scaleY);
+            texture.draw(x - camera.getPosition().getX(), y - camera.getPosition().getY(), scaleX, scaleY);
         }
     }
 }
