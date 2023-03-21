@@ -42,6 +42,10 @@ public class Vector2Int extends Vector2<Integer> {
         return new Vector2Int(1, 1);
     }
 
+    public static Vector2Int normalize(Vector2<Integer> original) {
+        return Vector2Int.of(Vector2Int.of(original).normalize());
+    }
+
     public static Vector2Int negate(Vector2<Integer> original) {
         return new Vector2Int(-original.getX(), -original.getY());
     }
@@ -56,6 +60,10 @@ public class Vector2Int extends Vector2<Integer> {
 
     public static Vector2Int multiply(Vector2<Integer> vector, double value) {
         return new Vector2Int((int) Math.round(value * vector.getX()), (int) Math.round(value * vector.getY()));
+    }
+
+    public static <V extends Vector2> Vector2Int of(V original) {
+        return new Vector2Int(original.getX().intValue(), original.getY().intValue());
     }
 
     @Override
@@ -73,7 +81,7 @@ public class Vector2Int extends Vector2<Integer> {
 
     @Override
     public String toString() {
-        return String.format("[%d|%d]", x, y);
+        return String.format("[%d|%d]", getX(), getY());
     }
 
 

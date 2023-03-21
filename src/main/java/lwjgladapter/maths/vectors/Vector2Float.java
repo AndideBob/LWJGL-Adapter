@@ -42,6 +42,10 @@ public class Vector2Float extends Vector2<Float> {
         return new Vector2Float(1, 1);
     }
 
+    public static Vector2Float normalize(Vector2<Float> original) {
+        return Vector2Float.of(Vector2Float.of(original).normalize());
+    }
+
     public static Vector2Float negate(Vector2<Float> original) {
         return new Vector2Float(-original.getX(), -original.getY());
     }
@@ -56,6 +60,10 @@ public class Vector2Float extends Vector2<Float> {
 
     public static Vector2Float multiply(Vector2<Float> vector, double value) {
         return new Vector2Float((int) Math.round(value * vector.getX()), (int) Math.round(value * vector.getY()));
+    }
+
+    public static <V extends Vector2> Vector2Float of(V original) {
+        return new Vector2Float(original.getX().floatValue(), original.getY().floatValue());
     }
 
     @Override
@@ -73,7 +81,7 @@ public class Vector2Float extends Vector2<Float> {
 
     @Override
     public String toString() {
-        return String.format("[%d|%d]", x, y);
+        return String.format("[%f|%f]", getX(), getY());
     }
 
 

@@ -55,7 +55,21 @@ public abstract class Vector2<N extends Number> {
         return this;
     }
 
+    public final Vector2<N> normalize() {
+        final double length = getLength();
+        x = (float) (x / length);
+        y = (float) (y / length);
+        return this;
+    }
+
     public final double getLength() {
         return Math.sqrt(x * x + y * y);
+    }
+
+    public static <N extends Number, V extends Vector2<N>> boolean isDistanceWithinMargin(V a, V b, float margin) {
+        float deltaX = a.getX().floatValue() - b.getX().floatValue();
+        float deltaY = a.getY().floatValue() - b.getY().floatValue();
+        double distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+        return distance <= margin;
     }
 }
